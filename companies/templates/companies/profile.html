@@ -19,16 +19,18 @@
                 {{ c_form|crispy }}
                 <label for="id_logo">Logo</label>
                 <p>{{ cp_form.logo }}</p>
+                <label for="id_company_field">Company Field</label>
+                <p>{{ cp_form.company_field }}</p>
                 <label for="id_city">City</label>
                 <p>{{ cp_form.city }}</p>
                 <div><a href="javascript:void(0);" onclick="toggleDisplay();">Your city not present in the list?</a></div><br>
                 <div id="hidden_visible_input" style="display: none;">
                     <label>City</label>
-                    <input type="test" name="input_city" required>
+                    <input id="input_city" type="text" name="input_city">
                     <label>State</label>
-                    <input type="test" name="input_state" required>
+                    <input id="input_state" type="text" name="input_state">
                     <label>Country</label>
-                    <input type="test" name="input_country" required>
+                    <input id="input_country" type="text" name="input_country">
                 </div><br>
                 <label for="id_website_url">Website URL</label>
                 <p>{{ cp_form.website_url }}</p>
@@ -46,12 +48,20 @@
     </div>
     <script type="text/javascript">
     const toggleDisplay = () => {
-        console.log('toggle');
         let hidden_visible = document.getElementById('hidden_visible_input');
         if (hidden_visible.style.display == 'none') {
             hidden_visible.style.display = 'block';
+            document.getElementById('input_city').setAttribute('required', '');
+            document.getElementById('input_state').setAttribute('required', '');
+            document.getElementById('input_country').setAttribute('required', '');
         } else {
             hidden_visible.style.display = 'none';
+            document.getElementById('input_city').removeAttribute('required');
+            document.getElementById('input_state').removeAttribute('required');
+            document.getElementById('input_country').removeAttribute('required');
+            document.getElementById('input_city').value = "";
+            document.getElementById('input_state').value = "";
+            document.getElementById('input_country').value = "";
         }
      }
 </script>

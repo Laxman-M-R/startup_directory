@@ -12,28 +12,32 @@ def home(request):
     if request.method == 'POST':
         city_id = request.POST.get('city')
         city = City.objects.get(pk=city_id)
-        companies = User.objects.filter(is_staff=False, companyprofile__city=city).prefetch_related(
+        company_field = request.POST.get('company_field')
+        companies = User.objects.filter(is_staff=False, companyprofile__city=city, companyprofile__company_field=company_field).prefetch_related(
                                                         Prefetch('companyprofile',
-                                                                  queryset = CompanyProfile.objects.filter(city=city_id)
+                                                                  queryset = CompanyProfile.objects.filter(city=city_id, company_field=company_field)
                                                         )
                                                     )
     else:
-        if request.GET.get('city'):
+        if request.GET.get('city') and request.GET.get('company_field'):
             city_id = request.GET.get('city')
             city = City.objects.get(pk=city_id)
-            companies = User.objects.filter(is_staff=False, companyprofile__city=city).prefetch_related(
+            company_field = request.GET.get('company_field')
+            companies = User.objects.filter(is_staff=False, companyprofile__city=city, companyprofile__company_field=company_field).prefetch_related(
                                                             Prefetch('companyprofile',
-                                                                      queryset = CompanyProfile.objects.filter(city=city_id)
+                                                                      queryset = CompanyProfile.objects.filter(city=city_id, company_field=company_field)
                                                             )
                                                         )
         else:
             city = City.objects.get(pk=1)
-            companies = User.objects.filter(is_staff=False, companyprofile__city=1).prefetch_related(
+            company_field = 'DF'
+            companies = User.objects.filter(is_staff=False, companyprofile__city=1, companyprofile__company_field=company_field).prefetch_related(
                                                                 Prefetch('companyprofile',
-                                                                          queryset = CompanyProfile.objects.filter(city=1)
+                                                                          queryset = CompanyProfile.objects.filter(city=1, company_field=company_field)
                                                                 )
                                                             )
     cities = City.objects.values('id', 'name')
+    company_fields = CompanyProfile.COMPANY_FIELDS
     paginator = NamePaginator(companies, on='username', per_page=25)
     try:
         page = int(request.GET.get('companies', '1'))
@@ -44,7 +48,7 @@ def home(request):
         page = paginator.page(page)
     except (InvalidPage):
         page = paginator.page(paginator.num_pages)
-    context = { 'companies': page, 'city': city, 'cities': cities }
+    context = { 'companies': page, 'city': city, 'cities': cities, 'company_field':company_field, 'company_fields': company_fields }
     return render(request, 'companies/home.html', context)
 
 def about(request):

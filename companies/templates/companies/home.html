@@ -13,6 +13,14 @@
                     </option>
                 {% endfor %}
             </select>
+            <select name = "company_field">
+                {% for key, value in company_fields %}
+                    <option value="{{ key }}"
+                            {% if company_field == key %} selected="selected" {% endif %}>
+                            {{ value }}
+                    </option>
+                {% endfor %}
+            </select>
             <input type="submit"  value="Select City" />
         </form>
 

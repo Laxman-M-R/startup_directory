@@ -1,0 +1,57 @@
+{% extends 'companies/base.html' %}
+{% block content %}
+    <div class="index-block">
+        <div class="main-header"><h1>Startups Directory</h1></div>
+
+        <form method="POST" action="{% url 'companies-home' %}"/>
+            {% csrf_token %}
+            <select name = "city">
+                {% for citiy in cities %}
+                    <option value="{{ citiy.id }}"
+                            {% if city.name == citiy.name %} selected="selected" {% endif %}>
+                            {{ citiy.name }}
+                    </option>
+                {% endfor %}
+            </select>
+            <input type="submit"  value="Select City" />
+        </form>
+
+        <div id="companies">
+
+            <div id="Bengaluru">
+                <div class="city-header"><h2>{{ city.name }}</h2></div>
+                <div class="row">
+                    {% for company in companies.object_list %}
+                        <div class="column">
+                            <a href="{{ company.companyprofile.website_url }}" target="_blank"><img class="bengaluru-images" src="{{ company.companyprofile.logo.url }}"></a>
+                            <h6>{{ company.username }}</h6>
+                        </div>
+                            {% if forloop.counter|divisibleby:5 %}
+                </div>
+                <div class="row">
+                            {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+
+        </div>
+
+        <div class="pagination">
+            Browse by title:
+            {% for p in companies.paginator.pages %}
+
+              {% ifequal p companies %}
+                  <span class="selected">{{ companies }}</span>
+              {% else %}
+                  <a href="?companies={{ p.number }}&city={{ city.id }}">
+                      {{ p }}
+                  </a>
+              {% endifequal %}
+
+            {% endfor %}
+        </div>
+
+    </div>
+{% endblock %}
+
+

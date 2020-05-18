@@ -1,0 +1,58 @@
+{% extends 'companies/base.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+    <div class="content-section">
+        <div class="content-section">
+          <div class="media">
+            <img class="rounded-circle account-img" src="{{ user.companyprofile.logo.url }}">
+            <div class="media-body">
+              <h2 class="account-heading">{{ user.username }}</h2>
+              <p class="text-secondary">{{ user.email }}</p>
+            </div>
+          </div>
+          <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <fieldset class="form-group">
+                <legend class="border-bottom mb-4">
+                    User Info
+                </legend>
+                {{ c_form|crispy }}
+                <label for="id_logo">Logo</label>
+                <p>{{ cp_form.logo }}</p>
+                <label for="id_city">City</label>
+                <p>{{ cp_form.city }}</p>
+                <div><a href="javascript:void(0);" onclick="toggleDisplay();">Your city not present in the list?</a></div><br>
+                <div id="hidden_visible_input" style="display: none;">
+                    <label>City</label>
+                    <input type="test" name="input_city" required>
+                    <label>State</label>
+                    <input type="test" name="input_state" required>
+                    <label>Country</label>
+                    <input type="test" name="input_country" required>
+                </div><br>
+                <label for="id_website_url">Website URL</label>
+                <p>{{ cp_form.website_url }}</p>
+                <label for="id_location">Location</label>
+                <p>{{ cp_form.location }}</p>
+            </fieldset>
+            <div class="form-group">
+                <button class="btn btn-outline-info" type="submit">
+                    Update
+                </button>
+            </div>
+        </form>
+        </div>
+
+    </div>
+    <script type="text/javascript">
+    const toggleDisplay = () => {
+        console.log('toggle');
+        let hidden_visible = document.getElementById('hidden_visible_input');
+        if (hidden_visible.style.display == 'none') {
+            hidden_visible.style.display = 'block';
+        } else {
+            hidden_visible.style.display = 'none';
+        }
+     }
+</script>
+{% endblock content %}

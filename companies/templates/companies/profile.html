@@ -17,12 +17,34 @@
                     User Info
                 </legend>
                 {{ c_form|crispy }}
+
                 <label for="id_logo">Logo</label>
                 <p>{{ cp_form.logo }}</p>
-                <label for="id_company_field">Company Field</label>
+
+                <label for="id_contact_person">Contact Person</label>
+                <p>{{ cp_form.contact_person }}</p>
+
+                <label for="id_contact_number">Contact Number</label>
+                <p>{{ cp_form.contact_number }}</p>
+
+                <label for="id_company_field">Field of Business</label>
                 <p>{{ cp_form.company_field }}</p>
+
+                <label for="id_company_category">Category</label>
+                <p>{{ cp_form.company_category }}</p>
+
+                <label for="id_company_subcategory">Sub Category</label>
+                <p>{{ cp_form.company_subcategory }}</p>
+
+                <label for="id_address">Address</label>
+                <p>{{ cp_form.address }}</p>
+
                 <label for="id_city">City</label>
                 <p>{{ cp_form.city }}</p>
+
+                <label for="id_pincode">Pincode</label>
+                <p>{{ cp_form.pincode }}</p>
+
                 <div><a href="javascript:void(0);" onclick="toggleDisplay();">Your city not present in the list?</a></div><br>
                 <div id="hidden_visible_input" style="display: none;">
                     <label>City</label>
@@ -32,10 +54,14 @@
                     <label>Country</label>
                     <input id="input_country" type="text" name="input_country">
                 </div><br>
+
                 <label for="id_website_url">Website URL</label>
                 <p>{{ cp_form.website_url }}</p>
+                <p>{{ cp_form.website_url.help_text }}</p>
+
                 <label for="id_location">Location</label>
                 <p>{{ cp_form.location }}</p>
+
             </fieldset>
             <div class="form-group">
                 <button class="btn btn-outline-info" type="submit">

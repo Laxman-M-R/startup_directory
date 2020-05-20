@@ -1,48 +1,37 @@
 {% extends 'companies/base.html' %}
+{% load static %}
+{% block extrahead %}<link rel="stylesheet" type="text/css" href="{% static 'companies/home.css' %}">{% endblock extrahead %}
 {% block content %}
+    
     <div class="index-block">
         <div class="main-header"><h1>Startups Directory</h1></div>
 
-        <form method="POST" action="{% url 'companies-home' %}"/>
+        <form class="choices_select_form" method="POST" action="{% url 'companies-home' %}"/>
             {% csrf_token %}
-            <select name = "city">
-                {% for citiy in cities %}
-                    <option value="{{ citiy.id }}"
-                            {% if city.name == citiy.name %} selected="selected" {% endif %}>
-                            {{ citiy.name }}
-                    </option>
-                {% endfor %}
-            </select>
-            <select name = "company_field">
-                {% for key, value in company_fields %}
-                    <option value="{{ key }}"
-                            {% if company_field == key %} selected="selected" {% endif %}>
-                            {{ value }}
-                    </option>
-                {% endfor %}
-            </select>
-            <input type="submit"  value="Select City" />
-        </form>
-
-        <div id="companies">
-
-            <div id="Bengaluru">
-                <div class="city-header"><h2>{{ city.name }}</h2></div>
-                <div class="row">
-                    {% for company in companies.object_list %}
-                        <div class="column">
-                            <a href="{{ company.companyprofile.website_url }}" target="_blank"><img class="bengaluru-images" src="{{ company.companyprofile.logo.url }}"></a>
-                            <h6>{{ company.username }}</h6>
-                        </div>
-                            {% if forloop.counter|divisibleby:5 %}
-                </div>
-                <div class="row">
-                            {% endif %}
+            <div class="cities_dropdown">
+                <select name = "city">
+                    {% for citiy in cities %}
+                        <option value="{{ citiy.id }}"
+                                {% if city.name == citiy.name %} selected="selected" {% endif %}>
+                                {{ citiy.name }}
+                        </option>
                     {% endfor %}
-                </div>
+                </select>
             </div>
-
-        </div>
+            <div class="company_fields_dropdown">
+                <select name = "company_field">
+                    {% for key, value in company_fields %}
+                        <option value="{{ key }}"
+                                {% if company_field == key %} selected="selected" {% endif %}>
+                                {{ value }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div>
+                <input type="submit"  value="Search" />
+            </div>
+        </form>
 
         <div class="pagination">
             Browse by title:
@@ -59,7 +48,29 @@
             {% endfor %}
         </div>
 
+        <div id="companies">
+
+            <div id="Bengaluru">
+                <div class="city-header"><h2>{{ city.name }}</h2></div>
+                <div class="row">
+                    {% for company in companies.object_list %}
+                        <div class="column">
+                            <a href="{{ company.companyprofile.website_url }}" target="_blank"><img class="bengaluru-images" src="{{ company.companyprofile.logo.url }}"></a>
+                            <h6>{{ company.username }}</h6>
+                        </div>
+                            {% if forloop.counter|divisibleby:2 %}
+                </div>
+                <div class="row">
+                            {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+
+        </div>
+
+        
+
     </div>
-{% endblock %}
+{% endblock content %}
 
 

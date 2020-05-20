@@ -29,6 +29,6 @@ class CompanyProfileUpdateForm(forms.ModelForm):
 
     class Meta:
         model = CompanyProfile
-        fields = ['logo', 'company_field', 'city', 'website_url', 'location']
+        fields = ['logo', 'contact_person', 'contact_number', 'company_field', 'company_category', 'company_subcategory', 'address', 'city', 'pincode', 'website_url', 'location']
 
 

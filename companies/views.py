@@ -77,9 +77,9 @@ def profile(request):
             c_form.save()
             if request.POST['input_city']:
                 uncommitted_cp_form = cp_form.save(commit=False)
-                co = Country.objects.create(name=request.POST['input_country'])
-                st = State.objects.create(country=co, name=request.POST['input_state'])
-                cit = City.objects.create(state=st, name=request.POST['input_city'])
+                co = Country.objects.get_or_create(name=request.POST['input_country'])
+                st = State.objects.get_or_create(country=co, name=request.POST['input_state'])
+                cit = City.objects.get_or_create(state=st, name=request.POST['input_city'])
                 uncommitted_cp_form.city = cit
                 uncommitted_cp_form.save()
             else:

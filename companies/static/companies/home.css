@@ -1,15 +1,19 @@
+body {
+
+}
+
 * {
   box-sizing: border-box;
-  /*background: gray;*/
 }
 
 main {
-  /*background: black;*/
 }
 
 .index-block {
   text-align: center;
 }
+
+
 
 .choices_select_form select, .choices_select_form input {
   margin: 10px;
@@ -41,6 +45,18 @@ main {
   text-align: center;
 }
 
+
+.pagination {
+  justify-content: flex-end;
+  margin: 10px;
+}
+
+.pagination > div
+{
+  text-align:center;
+  margin: 0 3px 0 3px;
+}
+
 .row {
   display: -ms-flexbox; /* IE10 */
   display: flex;
@@ -50,14 +66,14 @@ main {
 }
 
 /* Create four equal columns that sits next to each other */
-.column {
+.index_column {
   -ms-flex: 50%; /* IE10 */
   flex: 50%;
   max-width: 50%;
   padding: 0 4px;
 }
 
-.column img {
+.index_column img {
   margin-top: 8px;
   vertical-align: middle;
   /*width: 100%;*/
@@ -70,7 +86,7 @@ main {
 
 /* Responsive layout - makes a two column-layout instead of four columns */
 @media screen and (max-width: 800px) {
-  .column {
+  .index_column {
     -ms-flex: 50%;
     flex: 50%;
     max-width: 50%;
@@ -79,7 +95,7 @@ main {
 
 /* Responsive layout - makes the two columns stack on top of each other instead of next to each other */
 @media screen and (max-width: 600px) {
-  .column {
+  .index_column {
     -ms-flex: 100%;
     flex: 100%;
     max-width: 100%;

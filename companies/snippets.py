@@ -23,31 +23,58 @@ class NamePaginator(object):
             chunks[letter].append(obj)
 
         # the process for assigning objects to each page
-        current_page = NamePage(self)
+        current_page_alphabets = NamePage(self)
 
-        for letter in (string.ascii_uppercase + string.digits):
+        for letter in string.ascii_uppercase:
             if letter not in chunks:
-                current_page.add([], letter)
+                current_page_alphabets.add([], letter)
                 continue
 
             sub_list = chunks[letter] # the items in object_list starting with this letter
 
-            new_page_count = len(sub_list) + current_page.count
+            new_page_count = len(sub_list) + current_page_alphabets.count
             # first, check to see if sub_list will fit or it needs to go onto a new page.
             # if assigning this list will cause the page to overflow...
             # and an underflow is closer to per_page than an overflow...
             # and the page isn't empty (which means len(sub_list) > per_page)...
             if (new_page_count > per_page and \
-                    abs(per_page - current_page.count) < abs(per_page - new_page_count) and \
-                    current_page.count > 0):
+                    abs(per_page - current_page_alphabets.count) < abs(per_page - new_page_count) and \
+                    current_page_alphabets.count > 0):
                 # make a new page
-                self.pages.append(current_page)
-                current_page = NamePage(self)
+                self.pages.append(current_page_alphabets)
+                current_page_alphabets = NamePage(self)
 
-            current_page.add(sub_list, letter)
+            current_page_alphabets.add(sub_list, letter)
+
+        if current_page_alphabets.count > 0: self.pages.append(current_page_alphabets)
+
+        current_page_digits = NamePage(self)
+
+        for letter in string.digits:
+            if letter not in chunks:
+                current_page_digits.add([], letter)
+                print('current_page_digits')
+                print(current_page_digits)
+                continue
+
+            sub_list = chunks[letter] # the items in object_list starting with this letter
+
+            new_page_count = len(sub_list) + current_page_digits.count
+            # first, check to see if sub_list will fit or it needs to go onto a new page.
+            # if assigning this list will cause the page to overflow...
+            # and an underflow is closer to per_page than an overflow...
+            # and the page isn't empty (which means len(sub_list) > per_page)...
+            if (new_page_count > per_page and \
+                    abs(per_page - current_page_digits.count) < abs(per_page - new_page_count) and \
+                    current_page_digits.count > 0):
+                # make a new page
+                self.pages.append(current_page_digits)
+                current_page_digits = NamePage(self)
+
+            current_page_digits.add(sub_list, letter)
 
         # if we finished the for loop with a page that isn't empty, add it
-        if current_page.count > 0: self.pages.append(current_page)
+        if current_page_digits.count > 0: self.pages.append(current_page_digits)
 
     def page(self, num):
         """Returns a Page object for the given 1-based page number."""

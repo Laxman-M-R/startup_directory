@@ -31,12 +31,12 @@ class CompanyProfile(models.Model):
     contact_number = PhoneNumberField(null=False, blank=False, default='+910123456789')
     website_url = models.URLField(max_length=250, default='#')
     logo = models.ImageField(default='default.jpg', upload_to='profile_pics')
-    location = models.TextField(blank=True, null=True)
+    services = models.TextField(blank=True, null=True)
     address = models.CharField(max_length=500, blank=False, null=False, default='Gandhinagar')
     city = models.ForeignKey(City, models.SET_NULL, blank=True, null=True)
     pincode = models.ForeignKey(Pincode, models.SET_NULL, blank=True, null=True)
     company_field = models.CharField(max_length=100, choices=COMPANY_FIELDS, default=DIGITAL_FIELD)
-    company_category = models.ForeignKey(Category, models.SET_NULL, blank=True, null=True)
+    company_category = models.ForeignKey(Category, models.SET_NULL, blank=True, null=True, default=Category.objects.first().id)
     company_subcategory = models.ForeignKey(SubCategory, models.SET_NULL, blank=True, null=True)
 
     def __str__(self):

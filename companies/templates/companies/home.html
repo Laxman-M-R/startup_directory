@@ -2,47 +2,53 @@
 {% load static %}
 {% block extrahead %}<link rel="stylesheet" type="text/css" href="{% static 'companies/home.css' %}">{% endblock extrahead %}
 {% block content %}
-    
+
     <div class="index-block">
         <div class="main-header"><h1>Startups Directory</h1></div>
 
-        <form class="choices_select_form" method="POST" action="{% url 'companies-home' %}"/>
-            {% csrf_token %}
-            <div class="cities_dropdown">
-                <select name = "city">
-                    {% for citiy in cities %}
-                        <option value="{{ citiy.id }}"
-                                {% if city.name == citiy.name %} selected="selected" {% endif %}>
-                                {{ citiy.name }}
-                        </option>
-                    {% endfor %}
-                </select>
-            </div>
-            <div class="company_fields_dropdown">
-                <select name = "company_field">
-                    {% for key, value in company_fields %}
-                        <option value="{{ key }}"
-                                {% if company_field == key %} selected="selected" {% endif %}>
-                                {{ value }}
-                        </option>
-                    {% endfor %}
-                </select>
-            </div>
-            <div>
-                <input type="submit"  value="Search" />
-            </div>
-        </form>
+        <div class="search_forms">
+
+
+            <form class="choices_select_form" method="POST" action="{% url 'companies-home' %}"/>
+                {% csrf_token %}
+                <div class="cities_dropdown">
+                    <select name = "city">
+                        {% for citiy in cities %}
+                            <option value="{{ citiy.id }}"
+                                    {% if city.name == citiy.name %} selected="selected" {% endif %}>
+                                    {{ citiy.name }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="categories_dropdown">
+                    <select name = "category">
+                        {% for cat in categories %}
+                            <option value="{{ cat.id }}"
+                                    {% if category == cat %} selected="selected" {% endif %}>
+                                    {{ cat.name }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div>
+                <div>
+                    <input type="submit"  value="Search" />
+                </div>
+            </form>
+
+        </div>
 
         <div class="pagination">
             Browse by title:
             {% for p in companies.paginator.pages %}
 
               {% ifequal p companies %}
-                  <span class="selected">{{ companies }}</span>
+                  <div><span class="selected">{{ companies }}</span></div>
               {% else %}
-                  <a href="?companies={{ p.number }}&city={{ city.id }}">
+                  <div><a href="?companies={{ p.number }}&city={{ city.id }}&category={{ category.id }}">
                       {{ p }}
-                  </a>
+                  </a></div>
               {% endifequal %}
 
             {% endfor %}
@@ -54,9 +60,17 @@
                 <div class="city-header"><h2>{{ city.name }}</h2></div>
                 <div class="row">
                     {% for company in companies.object_list %}
-                        <div class="column">
-                            <a href="{{ company.companyprofile.website_url }}" target="_blank"><img class="bengaluru-images" src="{{ company.companyprofile.logo.url }}"></a>
-                            <h6>{{ company.username }}</h6>
+                        <div class="index_column">
+                            <div class="logo_services">
+                                <div class="company_logo"><a href="{% if company.companyprofile.website_url %} {{ company.companyprofile.website_url }} {% else %} http://maps.google.com/?q={{company.companyprofile.address}} {{company.companyprofile.city.name}} {% endif %}"
+                                   target="_blank">
+                                   <img class="bengaluru-images" src="{{ company.companyprofile.logo.url }}">
+                                </a></div>
+                                <div class="services">{{ company.companyprofile.services|linebreaks }}</div>
+                            </div>
+                            <div class="company_name"><h6>{{ company.username }}</h6></div>
+                            <div class="company_contact_number"><h6>{{ company.companyprofile.contact_number }}</h6></div>
+                            <br><br>
                         </div>
                             {% if forloop.counter|divisibleby:2 %}
                 </div>
@@ -68,7 +82,7 @@
 
         </div>
 
-        
+
 
     </div>
 {% endblock content %}

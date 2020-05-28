@@ -139,6 +139,8 @@ MEDIA_URL = '/media/'
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
+PHONENUMBER_DEFAULT_REGION = 'IN'
+
 LOGIN_REDIRECT_URL = 'companies-home'
 LOGIN_URL = 'login'
 

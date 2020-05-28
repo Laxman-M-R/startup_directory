@@ -1,8 +1,8 @@
-from django.urls import path
+from django.urls import path, include
 from . import views
 
 urlpatterns = [
     path('', views.home, name='companies-home'),
-    path('home/<str:city>', views.home, name='companies-home-city'),
     path('about/', views.about, name = 'companies-about'),
+    path('ajax/load-subcategories/', views.load_subcategories, name='ajax_load_subcategories'),
 ]

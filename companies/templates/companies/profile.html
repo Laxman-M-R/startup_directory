@@ -1,5 +1,6 @@
 {% extends 'companies/base.html' %}
 {% load crispy_forms_tags %}
+{{ form.media.css }}
 {% block content %}
     <div class="content-section">
         <div class="content-section">
@@ -10,7 +11,21 @@
               <p class="text-secondary">{{ user.email }}</p>
             </div>
           </div>
-          <form method="POST" enctype="multipart/form-data">
+          {% if cp_form.errors %}
+    {% for field in cp_form %}
+        {% for error in field.errors %}
+            <div class="alert alert-danger">
+                <strong>{{ error|escape }}</strong>
+            </div>
+        {% endfor %}
+    {% endfor %}
+    {% for error in cp_form.non_field_errors %}
+        <div class="alert alert-danger">
+            <strong>{{ error|escape }}</strong>
+        </div>
+    {% endfor %}
+{% endif %}
+          <form method="POST" id="companyProfileForm" data-subcategories-url="{% url 'ajax_load_subcategories' %}" enctype="multipart/form-data">
             {% csrf_token %}
             <fieldset class="form-group">
                 <legend class="border-bottom mb-4">
@@ -30,11 +45,27 @@
                 <label for="id_company_field">Field of Business</label>
                 <p>{{ cp_form.company_field }}</p>
 
-                <label for="id_company_category">Category</label>
-                <p>{{ cp_form.company_category }}</p>
+                <div id="company_category_dropdown">
+                    <label for="id_company_category">Category</label>
+                    <p>{{ cp_form.company_category }}</p>
+                </div>
 
-                <label for="id_company_subcategory">Sub Category</label>
-                <p>{{ cp_form.company_subcategory }}</p>
+                <div><a href="javascript:void(0);" onclick="toggleCategoryInputDisplay();">Your field of business not in the list?</a></div><br>
+                <div id="hidden_visible_category_input" style="display: none;">
+                    <label for="input_company_category">Field of business</label>
+                    <input id="input_company_category" type="text" name="input_company_category">
+                </div><br>
+
+                <div id="company_subcategory_dropdown">
+                    <label for="id_company_subcategory">Sub Category</label>
+                    <p>{{ cp_form.company_subcategory }}</p>
+                </div>
+
+                <div id="subcategory_present_text"><a href="javascript:void(0);" onclick="toggleSubCategoryInputDisplay();">Your subcategory of business not in the list?</a></div><br>
+                <div id="hidden_visible_subcategory_input" style="display: none;">
+                    <label for="input_company_subcategory">SubCategory</label>
+                    <input id="input_company_subcategory" type="text" name="input_company_subcategory">
+                </div><br>
 
                 <label for="id_address">Address</label>
                 <p>{{ cp_form.address }}</p>
@@ -42,25 +73,26 @@
                 <label for="id_city">City</label>
                 <p>{{ cp_form.city }}</p>
 
-                <label for="id_pincode">Pincode</label>
-                <p>{{ cp_form.pincode }}</p>
-
-                <div><a href="javascript:void(0);" onclick="toggleDisplay();">Your city not present in the list?</a></div><br>
-                <div id="hidden_visible_input" style="display: none;">
-                    <label>City</label>
+                <div><a href="javascript:void(0);" onclick="toggleCityInputDisplay();">Your city not present in the list?</a></div><br>
+                <div id="hidden_visible_city_input" style="display: none;">
+                    <label for="id_state">State</label>
+                    <p>{{ cp_form.state }}</p>
+                    <label for="input_city">City</label>
                     <input id="input_city" type="text" name="input_city">
-                    <label>State</label>
-                    <input id="input_state" type="text" name="input_state">
-                    <label>Country</label>
-                    <input id="input_country" type="text" name="input_country">
+                </div><br>
+
+                <div>
+                    <label for="input_pincode">Pincode</label>
+                    <input id="input_pincode" type="text" name="input_pincode" value="{{ pincode }}">                
                 </div><br>
 
                 <label for="id_website_url">Website URL</label>
                 <p>{{ cp_form.website_url }}</p>
                 <p>{{ cp_form.website_url.help_text }}</p>
 
-                <label for="id_location">Location</label>
-                <p>{{ cp_form.location }}</p>
+                <label for="id_location">Services</label>
+                <p>{{ cp_form.services }}</p>
+                <p>{{ cp_form.services.help_text }}</p>
 
             </fieldset>
             <div class="form-group">
@@ -73,22 +105,73 @@
 
     </div>
     <script type="text/javascript">
-    const toggleDisplay = () => {
-        let hidden_visible = document.getElementById('hidden_visible_input');
-        if (hidden_visible.style.display == 'none') {
-            hidden_visible.style.display = 'block';
-            document.getElementById('input_city').setAttribute('required', '');
-            document.getElementById('input_state').setAttribute('required', '');
-            document.getElementById('input_country').setAttribute('required', '');
-        } else {
-            hidden_visible.style.display = 'none';
-            document.getElementById('input_city').removeAttribute('required');
-            document.getElementById('input_state').removeAttribute('required');
-            document.getElementById('input_country').removeAttribute('required');
-            document.getElementById('input_city').value = "";
-            document.getElementById('input_state').value = "";
-            document.getElementById('input_country').value = "";
+        const toggleCityInputDisplay = () => {
+            let hidden_visible_city = document.getElementById('hidden_visible_city_input');
+            if (hidden_visible_city.style.display == 'none') {
+                hidden_visible_city.style.display = 'block';
+                document.getElementById('input_city').setAttribute('required', '');
+            } else {
+                hidden_visible_city.style.display = 'none';
+                document.getElementById('input_city').removeAttribute('required');
+                document.getElementById('input_city').value = "";
+            }
         }
-     }
-</script>
+
+        const toggleCategoryInputDisplay = () => {
+            let hidden_visible_category = document.getElementById('hidden_visible_category_input');
+            let hidden_visible_subcategory = document.getElementById('hidden_visible_subcategory_input');
+            if (hidden_visible_category.style.display == 'none') {
+                document.getElementById('company_category_dropdown').style.display = 'none';
+                document.getElementById('id_company_category').selectedIndex = -1;
+                document.getElementById('subcategory_present_text').style.display = 'none';
+                document.getElementById('company_subcategory_dropdown').style.display = 'none';
+                document.getElementById('id_company_subcategory').selectedIndex = -1;
+                hidden_visible_category.style.display = 'block';
+                hidden_visible_subcategory.style.display = 'block';
+                document.getElementById('input_company_category').setAttribute('required', '');
+                document.getElementById('input_company_subcategory').setAttribute('required', '');
+            } else {
+                hidden_visible_category.style.display = 'none';
+                hidden_visible_subcategory.style.display = 'none';
+                document.getElementById('company_category_dropdown').style.display = 'block';
+                document.getElementById('subcategory_present_text').style.display = 'block';
+                document.getElementById('company_subcategory_dropdown').style.display = 'block';
+                document.getElementById('input_company_category').removeAttribute('required');
+                document.getElementById('input_company_subcategory').removeAttribute('required');
+                document.getElementById('input_company_category').value = "";
+                document.getElementById('input_company_subcategory').value = "";
+            }
+        }
+
+        const toggleSubCategoryInputDisplay = () => {
+            let hidden_visible_category = document.getElementById('hidden_visible_subcategory_input');
+            if (hidden_visible_category.style.display == 'none') {
+                document.getElementById('company_subcategory_dropdown').style.display = 'none';
+                document.getElementById('id_company_subcategory').selectedIndex = -1;
+                hidden_visible_category.style.display = 'block';
+                document.getElementById('input_company_subcategory').setAttribute('required', '');
+            } else {
+                hidden_visible_category.style.display = 'none';
+                document.getElementById('company_subcategory_dropdown').style.display = 'block';
+                document.getElementById('input_company_subcategory').removeAttribute('required');
+                document.getElementById('input_company_subcategory').value = "";
+            }
+        }
+
+        $("#id_company_category").change(function () {
+          var url = $("#companyProfileForm").attr("data-subcategories-url"); 
+          var categoryId = $(this).val();
+
+          $.ajax({                       
+            url: url,                    
+            data: {
+              'company_category': categoryId
+            },
+            success: function (data) {   
+              $("#id_company_subcategory").html(data);
+            }
+          });
+
+        });
+    </script>
 {% endblock content %}
